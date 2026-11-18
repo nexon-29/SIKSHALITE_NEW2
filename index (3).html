@@ -1,0 +1,1772 @@
+l<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SikshaLite — Learning that is measured</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --primary-soft: #eef2ff;
+      --accent: #fbbf24;
+      --green: #16a34a;
+      --green-soft: #dcfce7;
+      --red: #dc2626;
+      --red-soft: #fee2e2;
+      --bg: #f5f6fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Top Header */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 18px;
+      overflow: hidden;
+    }
+    .brand-icon.gold { background: #f59e0b; color: #111827; }
+    .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-title { font-weight: 700; font-size: 16px; line-height: 1.2; }
+    .brand-sub { font-size: 12px; color: var(--muted); }
+    .user-chip { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #374151; }
+    .avatar-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #fef3c7; color: #b45309; font-weight: 700;
+      display: grid; place-items: center; overflow: hidden;
+    }
+    .avatar-dot img { width: 100%; height: 100%; object-fit: cover; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 24px 18px 80px; }
+
+    /* Hero Banner */
+    .hero {
+      background: linear-gradient(135deg, #312e81 0%, #4338ca 55%, #5b21b6 100%);
+      border-radius: 18px;
+      padding: 36px 34px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      box-shadow: 0 14px 30px rgba(49, 46, 129, 0.2);
+      margin-bottom: 24px;
+    }
+    .hero h1 { font-size: 34px; font-weight: 800; line-height: 1.15; margin-bottom: 10px; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { color: #e0e7ff; font-size: 14.5px; line-height: 1.5; max-width: 560px; margin-bottom: 18px; }
+    .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hero-pill {
+      background: rgba(255, 255, 255, 0.13);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 500;
+    }
+    .hero-art { width: 140px; flex-shrink: 0; text-align: center; }
+
+    /* Cards & Forms */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(17, 24, 39, 0.03);
+    }
+    .auth-card { max-width: 520px; margin: 0 auto; }
+    .tabs-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .tab-btn {
+      background: #fff; border: 1px solid var(--border); color: #374151;
+      padding: 8px 14px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: 0.15s;
+    }
+    .tab-btn:hover { background: #f9fafb; }
+    .tab-btn.active { background: var(--primary-soft); color: var(--primary); border-color: #c7d2fe; }
+    .form-group { margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: block; font-size: 12.5px; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    input[type="text"], input[type="tel"], input[type="number"], select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 9px;
+      font-size: 14px; outline: none; background: #fff; color: var(--text);
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12); }
+    textarea { resize: vertical; min-height: 90px; }
+    .btn {
+      border: none; border-radius: 9px; padding: 10px 16px; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-outline { background: #fff; color: #374151; border: 1px solid var(--border); }
+    .btn-outline:hover { background: #f9fafb; }
+    .btn-danger { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; }
+    .btn-danger:hover { background: #fee2e2; }
+    .btn-sm { padding: 6px 11px; font-size: 12.5px; border-radius: 7px; }
+    .helper { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.45; }
+    .badge {
+      display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600;
+      background: var(--primary-soft); color: var(--primary);
+    }
+    .badge-green { background: var(--green-soft); color: var(--green); }
+    .badge-amber { background: #fef3c7; color: #b45309; }
+    .badge-red { background: var(--red-soft); color: var(--red); }
+
+    /* KPI Grids */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .kpi-card { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 16px; }
+    .kpi-val { font-size: 24px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+    .kpi-val.green { color: var(--green); }
+    .kpi-label { font-size: 12.5px; color: var(--muted); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { text-align: left; padding: 11px 10px; border-bottom: 1px solid var(--border); }
+    th { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+    .code-box {
+      background: #fef3c7; color: #92400e; border: 1px dashed #f59e0b;
+      padding: 10px 16px; border-radius: 10px; font-family: monospace; font-size: 18px; font-weight: 800;
+      display: inline-block; letter-spacing: 1px;
+    }
+    .mono-pill {
+      font-family: monospace; background: #f3f4f6; padding: 4px 8px; border-radius: 6px; font-size: 12.5px; font-weight: 600;
+    }
+
+    /* Course Banner & Stepper */
+    .course-banner {
+      background: linear-gradient(135deg, #15803d, #22c55e);
+      color: #fff; border-radius: 14px; padding: 20px 24px; margin-bottom: 16px;
+    }
+    .course-banner h2 { font-size: 22px; margin-bottom: 4px; }
+    .stepper { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .step-pill {
+      padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;
+      background: #f3f4f6; color: var(--muted); border: none; cursor: pointer;
+    }
+    .step-pill.active { background: var(--primary); color: #fff; }
+    .step-pill:disabled { opacity: 0.5; cursor: not-allowed; }
+    .quiz-q { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #f3f4f6; }
+    .quiz-q h4 { font-size: 14.5px; margin-bottom: 10px; }
+    .opt-label {
+      display: flex; align-items: center; gap: 10px; padding: 9px 12px; margin-bottom: 6px;
+      border: 1px solid var(--border); border-radius: 9px; cursor: pointer; font-weight: 400; font-size: 13.5px;
+    }
+    .opt-label:hover { background: #f9fafb; }
+
+    /* Bar Chart */
+    .chart-box { display: flex; align-items: flex-end; justify-content: center; gap: 40px; height: 190px; padding: 20px 10px 0; border-bottom: 1px solid var(--border); }
+    .bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+    .bar { width: 42px; border-radius: 8px 8px 0 0; transition: height 0.4s; }
+    .bar.before { background: #9ca3af; }
+    .bar.after { background: var(--primary); }
+
+    /* Progress Bar */
+    .progress-track { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; display: flex; margin: 10px 0; }
+    .progress-seg.green { background: var(--green); }
+    .progress-seg.gray { background: #9ca3af; }
+    .progress-seg.red { background: var(--red); }
+
+    /* Modal & Floating Ask Claude */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(17, 24, 39, 0.55);
+      display: none; align-items: center; justify-content: center; z-index: 60; padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 16px; max-width: 460px; width: 100%; padding: 24px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+    }
+    .ask-claude-btn {
+      position: fixed; bottom: 20px; right: 20px; z-index: 50;
+      background: linear-gradient(135deg, #4f46e5, #6d28d9); color: #fff;
+      border: none; border-radius: 999px; padding: 11px 18px; font-weight: 700; font-size: 13.5px;
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35); cursor: pointer;
+    }
+    .toast {
+      position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+      background: #111827; color: #fff; padding: 10px 18px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; z-index: 80; display: none;
+    }
+    .toast.show { display: block; }
+    .danger-zone { background: #fff5f5; border: 1px solid #fecaca; border-radius: 14px; padding: 20px; }
+    .img-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .img-thumb { position: relative; width: 110px; height: 82px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .img-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .img-thumb button {
+      position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.65); color: #fff;
+      border: none; border-radius: 50%; width: 20px; height: 20px; cursor: pointer; font-size: 11px;
+    }
+    @media (max-width: 680px) {
+      .hero { flex-direction: column; text-align: left; }
+      .hero-art { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Shared Modal Container -->
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div id="modalContent" class="modal"></div>
+  </div>
+
+  <!-- Floating Ask Claude Button -->
+  <button class="ask-gemini-btn" onclick="openAskGeminiModal()">✨ Ask Gemini</button>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // ================= Render & Local Backend Connection =================
+    const RENDER_BACKEND_URL = 'https://sikshalite-new.onrender.com';
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:5000'
+      : RENDER_BACKEND_URL;
+
+    // ================= App State =================
+    const state = {
+      user: JSON.parse(localStorage.getItem('siksha_user') || 'null'),
+      institution: JSON.parse(localStorage.getItem('siksha_inst') || 'null'),
+      authTab: 'student', // student | officials | register
+      otpSent: false,
+      demoOtp: '',
+      adminTab: 'overview', // overview | newCourse | courses | analysis | students | submissions | teachers | institute
+      analyticsData: null,
+      selectedAnalysisCourse: 'all',
+      editingCourseId: null,
+      editingSubCourseId: null,
+      courseDraft: {
+        title: '',
+        subject: '',
+        summary: '',
+        studyMaterial: '',
+        images: [],
+        quizLines: '',
+        assignmentTitle: 'Assignment',
+        assignmentTask: ''
+      },
+      studentDashboard: null,
+      activeStudentCourseId: null,
+      studentCourseStep: 1 // 1=pre, 2=study+post, 3=assignment
+    };
+
+    async function api(path, options = {}) {
+      let res;
+      try {
+        res = await fetch(`${API_BASE}${path}`, {
+          ...options,
+          headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+        });
+      } catch (e) {
+        throw new Error('Cannot reach the server. It may be waking up - please wait 30-60 seconds and try again.');
+      }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    }
+
+    window.addEventListener('unhandledrejection', (e) => {
+      e.preventDefault();
+      const m = (e.reason && e.reason.message) ? e.reason.message : 'Something went wrong';
+      console.error(e.reason);
+      showToast(m);
+    });
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    function saveSession(user, institution) {
+      state.user = user;
+      state.institution = institution;
+      localStorage.setItem('siksha_user', JSON.stringify(user));
+      localStorage.setItem('siksha_inst', JSON.stringify(institution));
+    }
+
+    function logout() {
+      state.user = null;
+      state.institution = null;
+      state.analyticsData = null;
+      state.studentDashboard = null;
+      state.activeStudentCourseId = null;
+      localStorage.removeItem('siksha_user');
+      localStorage.removeItem('siksha_inst');
+      render();
+    }
+
+    function openModal(html) {
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('modalBackdrop').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('open');
+    }
+
+    function escapeHtml(str = '') {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function formatStudyMaterial(raw = '') {
+      const blocks = raw.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+      return blocks.map(b => {
+        if (b.startsWith('## ')) {
+          return `<h4 style="margin:14px 0 6px;font-size:15px;color:#111827;">${escapeHtml(b.slice(3))}</h4>`;
+        }
+        return `<p style="margin-bottom:10px;line-height:1.6;color:#374151;font-size:14px;">${escapeHtml(b).replace(/\n/g, '<br>')}</p>`;
+      }).join('');
+    }
+
+    function parseQuizLines(raw = '') {
+      return raw.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+        const parts = line.split('|').map(p => p.trim());
+        const correctNum = Math.min(4, Math.max(1, parseInt(parts[5] || '1', 10) || 1));
+        return {
+          question: parts[0] || '',
+          options: [parts[1] || 'A', parts[2] || 'B', parts[3] || 'C', parts[4] || 'D'],
+          correctIndex: correctNum - 1
+        };
+      }).filter(q => q.question);
+    }
+
+    function quizToLines(quiz = []) {
+      return quiz.map(q => `${q.question} | ${q.options.join(' | ')} | ${(q.correctIndex ?? 0) + 1}`).join('\n');
+    }
+
+    // ================= Ask Claude Study Helper =================
+    function openAskClaudeModal() {
+      openModal(`
+        <h3 style="margin-bottom:8px;">✨ Ask Claude</h3>
+        <p class="helper" style="margin-bottom:12px;">Ask about any study topic, teaching concept, or learning-gain metric.</p>
+        <div class="form-group">
+          <textarea id="claudeQuestion" placeholder="e.g. Explain how chlorophyll absorbs light in simple words..."></textarea>
+        </div>
+        <div id="claudeAnswerBox" style="display:none;background:#f5f3ff;border:1px solid #ddd6fe;padding:12px;border-radius:10px;font-size:13.5px;line-height:1.5;margin-bottom:12px;"></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button class="btn btn-outline" onclick="closeModal()">Close</button>
+          <button class="btn btn-primary" onclick="submitAskClaude()">Ask</button>
+        </div>
+      `);
+    }
+
+    async function submitAskClaude() {
+      const q = document.getElementById('claudeQuestion').value.trim();
+      if (!q) return;
+      const box = document.getElementById('claudeAnswerBox');
+      box.style.display = 'block';
+      box.textContent = 'Thinking...';
+      try {
+        const context = state.institution ? `Institution: ${state.institution.name}` : 'SikshaLite Platform';
+        const data = await api('/api/ai/ask', { method: 'POST', body: JSON.stringify({ question: q, context }) });
+        box.textContent = data.answer;
+      } catch (err) {
+        box.textContent = err.message;
+      }
+    }
+
+    // ================= Landing & Auth Views =================
+    function renderLanding() {
+      const tab = state.authTab;
+      return `
+        <div class="topbar">
+          <div class="brand">
+            <div class="brand-icon">🎓</div>
+            <div>
+              <div class="brand-title">SikshaLite</div>
+              <div class="brand-sub">Learning that is measured</div>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <div class="hero">
+            <div>
+              <h1>Learning that is <span>measured.</span></h1>
+              <p>Teachers publish study material, quizzes and assignments; every student gets a pre-test and post-test to prove real learning gain.</p>
+              <div class="hero-pills">
+                <span class="hero-pill">📚 Teacher-wise subjects</span>
+                <span class="hero-pill">🖼️ Images & diagrams</span>
+                <span class="hero-pill">📊 Pre & post tests</span>
+                <span class="hero-pill">✨ AI courses</span>
+              </div>
+            </div>
+            <div class="hero-art">
+              <svg width="118" height="106" viewBox="0 0 120 110" fill="none">
+                <polygon points="60,8 10,36 110,36" fill="#e0e7ff"/>
+                <rect x="16" y="38" width="88" height="8" fill="#e0e7ff"/>
+                <rect x="24" y="48" width="12" height="42" fill="#c7d2fe"/>
+                <rect x="46" y="48" width="12" height="42" fill="#c7d2fe"/>
+                <rect x="68" y="48" width="12" height="42" fill="#c7d2fe"/>
+                <rect x="90" y="48" width="12" height="42" fill="#c7d2fe"/>
+                <rect x="10" y="90" width="100" height="10" rx="3" fill="#fbbf24"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="card auth-card">
+            <div class="tabs-bar">
+              <button class="tab-btn ${tab === 'student' ? 'active' : ''}" onclick="state.authTab='student';render()">🎓 Student</button>
+              <button class="tab-btn ${tab === 'officials' ? 'active' : ''}" onclick="state.authTab='officials';state.otpSent=false;render()">🏛️ Officials login</button>
+              <button class="tab-btn ${tab === 'register' ? 'active' : ''}" onclick="state.authTab='register';render()">➕ Register institute</button>
+            </div>
+
+            ${tab === 'student' ? `
+              <div class="form-group">
+                <label>Your unique Student ID</label>
+                <input type="text" id="studentIdInput" placeholder="e.g. STU-AB12CD" />
+              </div>
+              <button class="btn btn-primary" onclick="handleStudentLogin()">Enter</button>
+              <p class="helper">No password. Your teacher registered this ID for you in your institution.</p>
+            ` : ''}
+
+            ${tab === 'officials' ? `
+              <div class="form-group">
+                <label>Institution code</label>
+                <input type="text" id="offInstCode" placeholder="INS-XXXXXX" value="${escapeHtml(state.offCode || '')}" />
+              </div>
+              <div class="form-group">
+                <label>Registered mobile number</label>
+                <input type="tel" id="offMobile" placeholder="10-digit mobile number" value="${escapeHtml(state.offMob || '')}" />
+              </div>
+              ${!state.otpSent ? `
+                <button class="btn btn-primary" onclick="handleSendOtp()">Send OTP</button>
+              ` : `
+                <div style="background:#111827;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:12px;display:inline-block;">
+                  Demo OTP: ${escapeHtml(state.demoOtp)}
+                </div>
+                <div class="form-group">
+                  <label>6-digit OTP</label>
+                  <input type="text" id="offOtp" placeholder="Enter 6-digit OTP" />
+                </div>
+                <button class="btn btn-primary" onclick="handleVerifyOtp()">Verify & Login</button>
+              `}
+              <p class="helper">Demo mode shows the OTP on screen — plug in an SMS provider for real delivery.</p>
+            ` : ''}
+
+            ${tab === 'register' ? `
+              <div class="form-group">
+                <label>Institution name</label>
+                <input type="text" id="regName" placeholder="e.g. Sunrise Public School" />
+              </div>
+              <div class="form-group">
+                <label>About the institution</label>
+                <textarea id="regAbout" placeholder="e.g. A K-12 school focused on measurable learning outcomes."></textarea>
+              </div>
+              <div class="form-group">
+                <label>Address / city</label>
+                <input type="text" id="regAddress" placeholder="e.g. Pune, Maharashtra" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Admin name</label>
+                  <input type="text" id="regAdminName" placeholder="e.g. Anita Sharma" />
+                </div>
+                <div class="form-group">
+                  <label>Admin mobile (for OTP)</label>
+                  <input type="tel" id="regAdminMobile" placeholder="e.g. 9876543210" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Logo (optional)</label>
+                <input type="file" id="regLogo" accept="image/*" />
+              </div>
+              <button class="btn btn-primary" onclick="handleRegisterInstitute()">Create institution & get code</button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleStudentLogin() {
+      const uniqueId = document.getElementById('studentIdInput').value.trim();
+      if (!uniqueId) return showToast('Enter your Student ID');
+      try {
+        const data = await api('/api/auth/student-login', { method: 'POST', body: JSON.stringify({ uniqueId }) });
+        saveSession(data.user, data.institution);
+        await loadStudentDashboard();
+        render();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    async function handleSendOtp() {
+      const institutionCode = document.getElementById('offInstCode').value.trim();
+      const mobile = document.getElementById('offMobile').value.trim();
+      if (!institutionCode || !mobile) return showToast('Enter institution code and mobile number');
+      state.offCode = institutionCode;
+      state.offMob = mobile;
+      try {
+        const data = await api('/api/auth/send-otp', { method: 'POST', body: JSON.stringify({ institutionCode, mobile }) });
+        state.otpSent = true;
+        state.demoOtp = data.demoOtp;
+        render();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    async function handleVerifyOtp() {
+      const otp = document.getElementById('offOtp').value.trim();
+      try {
+        const data = await api('/api/auth/verify-otp', {
+          method: 'POST',
+          body: JSON.stringify({ institutionCode: state.offCode, mobile: state.offMob, otp })
+        });
+        saveSession(data.user, data.institution);
+        state.adminTab = 'overview';
+        await loadAnalytics();
+        render();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    async function handleRegisterInstitute() {
+      const name = document.getElementById('regName').value.trim();
+      const about = document.getElementById('regAbout').value.trim();
+      const address = document.getElementById('regAddress').value.trim();
+      const adminName = document.getElementById('regAdminName').value.trim();
+      const adminMobile = document.getElementById('regAdminMobile').value.trim();
+      const logoFile = document.getElementById('regLogo').files[0];
+
+      if (!name || !adminName || !adminMobile) return showToast('Please fill required fields');
+      const logo = logoFile ? await fileToBase64(logoFile) : '';
+
+      try {
+        const data = await api('/api/institutions/register', {
+          method: 'POST',
+          body: JSON.stringify({ name, about, address, adminName, adminMobile, logo })
+        });
+        saveSession(data.user, data.institution);
+        state.adminTab = 'overview';
+        await loadAnalytics();
+        render();
+
+        openModal(`
+          <div style="text-align:center;">
+            <h3 style="margin-bottom:8px;">🎉 Institution created</h3>
+            <p class="helper" style="margin-bottom:14px;">Your institution code (share it only with your teachers):</p>
+            <div class="code-box" style="margin-bottom:14px;">${escapeHtml(data.institution.code)}</div>
+            <p class="helper" style="margin-bottom:18px;">Log in later with this code and your mobile number.</p>
+            <button class="btn btn-primary" onclick="closeModal()">Continue</button>
+          </div>
+        `);
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    // ================= Admin / Teacher Data Loader & Header =================
+    async function loadAnalytics() {
+      if (!state.institution) return;
+      const data = await api(`/api/institutions/${state.institution.code}/analytics`);
+      state.analyticsData = data;
+      if (data.institution) {
+        state.institution = data.institution;
+        localStorage.setItem('siksha_inst', JSON.stringify(data.institution));
+      }
+    }
+
+    function renderInstHeader() {
+      const inst = state.institution || {};
+      const user = state.user || {};
+      const logoHtml = inst.logo
+        ? `<img src="${inst.logo}" alt="Logo" />`
+        : escapeHtml(inst.name || 'S')[0].toUpperCase();
+
+      return `
+        <div class="topbar">
+          <div class="brand">
+            <div class="brand-icon gold">${logoHtml}</div>
+            <div>
+              <div class="brand-title">${escapeHtml(inst.name)}</div>
+              <div class="brand-sub">Powered by SikshaLite</div>
+            </div>
+          </div>
+          <div class="user-chip">
+            <div class="avatar-dot">${user.photo ? `<img src="${user.photo}" />` : escapeHtml((user.name || 'A')[0].toUpperCase())}</div>
+            <span>${escapeHtml(user.name)}</span>
+            <span class="badge">${escapeHtml(user.role)}</span>
+            <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAdminShell() {
+      const t = state.adminTab;
+      const isAdmin = state.user?.role === 'admin';
+      let body = '';
+
+      if (t === 'overview') body = renderOverviewTab();
+      else if (t === 'newCourse') body = renderNewCourseTab();
+      else if (t === 'courses') body = renderCoursesTab();
+      else if (t === 'analysis') body = renderAnalysisTab();
+      else if (t === 'students') body = renderStudentsTab();
+      else if (t === 'submissions') body = renderSubmissionsTab();
+      else if (t === 'teachers') body = renderTeachersTab();
+      else if (t === 'institute') body = renderInstituteTab();
+
+      return `
+        ${renderInstHeader()}
+        <div class="container">
+          <div class="tabs-bar">
+            <button class="tab-btn ${t==='overview'?'active':''}" onclick="switchAdminTab('overview')">📊 Overview</button>
+            <button class="tab-btn ${t==='newCourse'?'active':''}" onclick="switchAdminTab('newCourse')">➕ New course</button>
+            <button class="tab-btn ${t==='courses'?'active':''}" onclick="switchAdminTab('courses')">📚 Courses</button>
+            <button class="tab-btn ${t==='analysis'?'active':''}" onclick="switchAdminTab('analysis')">📈 Analysis</button>
+            <button class="tab-btn ${t==='students'?'active':''}" onclick="switchAdminTab('students')">🎓 Students</button>
+            <button class="tab-btn ${t==='submissions'?'active':''}" onclick="switchAdminTab('submissions')">📝 Submissions</button>
+            ${isAdmin ? `<button class="tab-btn ${t==='teachers'?'active':''}" onclick="switchAdminTab('teachers')">👩‍🏫 Teachers</button>` : ''}
+            ${isAdmin ? `<button class="tab-btn ${t==='institute'?'active':''}" onclick="switchAdminTab('institute')">🏛️ Institute</button>` : ''}
+          </div>
+          ${body}
+        </div>
+      `;
+    }
+
+    async function switchAdminTab(tab) {
+      state.adminTab = tab;
+      if (tab !== 'newCourse') state.editingCourseId = null;
+      try {
+        await loadAnalytics();
+      } catch (err) {
+        showToast(err.message);
+      }
+      render();
+    }
+
+    function renderOverviewTab() {
+      const d = state.analyticsData || { summary: {} };
+      const s = d.summary || {};
+      const inst = d.institution || state.institution || {};
+      const logoHtml = inst.logo ? `<img src="${inst.logo}" />` : escapeHtml((inst.name || 'S')[0].toUpperCase());
+
+      return `
+        <div class="card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="brand-icon gold" style="width:48px;height:48px;font-size:20px;">${logoHtml}</div>
+            <div>
+              <h2 style="font-size:19px;">${escapeHtml(inst.name)}</h2>
+              <div class="helper" style="margin-top:2px;">${escapeHtml(inst.address || '')} ${inst.about ? '• ' + escapeHtml(inst.about) : ''}</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="helper" style="margin-bottom:4px;">Institution code</div>
+            <div class="code-box" style="font-size:14px;padding:6px 12px;">${escapeHtml(inst.code)}</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-val">${s.studentCount || 0}</div><div class="kpi-label">Students</div></div>
+          <div class="kpi-card"><div class="kpi-val">${s.courseCount || 0}</div><div class="kpi-label">Courses</div></div>
+          <div class="kpi-card"><div class="kpi-val">${s.avgPre || 0}% → ${s.avgPost || 0}%</div><div class="kpi-label">Avg pre → post</div></div>
+          <div class="kpi-card"><div class="kpi-val green">+${s.gain || 0} pts</div><div class="kpi-label">Learning gain (${s.measuredCount || 0} learners)</div></div>
+          <div class="kpi-card"><div class="kpi-val">${s.growthRate || 0}%</div><div class="kpi-label">Growth rate (post vs pre)</div></div>
+          <div class="kpi-card"><div class="kpi-val">${s.normGain || 0}% 🎯</div><div class="kpi-label">Normalized gain · ${s.normLevel || 'Low'}</div></div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:6px;">Pre-test vs post-test</h3>
+          <div class="chart-box">
+            <div class="bar-wrap">
+              <div style="font-size:12px;font-weight:700;">${s.avgPre || 0}%</div>
+              <div class="bar before" style="height:${Math.max(4, (s.avgPre || 0) * 1.4)}px;"></div>
+              <div class="helper">Before</div>
+            </div>
+            <div class="bar-wrap">
+              <div style="font-size:12px;font-weight:700;">${s.avgPost || 0}%</div>
+              <div class="bar after" style="height:${Math.max(4, (s.avgPost || 0) * 1.4)}px;"></div>
+              <div class="helper">After</div>
+            </div>
+          </div>
+          <p class="helper" style="text-align:center;margin-top:10px;">■ grey = before · ■ purple = after</p>
+        </div>
+      `;
+    }
+
+    // ================= New Course Tab (Continued cleanly through end) =================
+    function renderNewCourseTab() {
+      const c = state.courseDraft;
+      const isEditing = Boolean(state.editingCourseId);
+
+      return `
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:6px;">✨ Generate with AI</h3>
+          <p class="helper" style="margin-bottom:12px;">Type a topic. AI fills the form below with study material, a quiz, an assignment and a diagram. Review and edit before saving.</p>
+          <div class="form-group">
+            <label>Topic</label>
+            <input type="text" id="aiTopicInput" placeholder="e.g. Photosynthesis, Class 8" />
+          </div>
+          <button class="btn btn-primary" id="aiGenBtn" onclick="handleAiGenerateCourse()">Generate everything</button>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:14px;">📝 ${isEditing ? 'Edit course' : 'Course editor'}</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Course title</label>
+              <input type="text" id="cTitle" value="${escapeHtml(c.title)}" oninput="state.courseDraft.title=this.value" placeholder="e.g. Photosynthesis" />
+            </div>
+            <div class="form-group">
+              <label>Subject</label>
+              <input type="text" id="cSubject" value="${escapeHtml(c.subject)}" oninput="state.courseDraft.subject=this.value" placeholder="e.g. Science" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Short summary</label>
+            <input type="text" id="cSummary" value="${escapeHtml(c.summary)}" oninput="state.courseDraft.summary=this.value" placeholder="How plants make food using sunlight" />
+          </div>
+          <div class="form-group">
+            <label>Study material — blank line between paragraphs; start a block with '## Heading' for a section title</label>
+            <textarea id="cMaterial" style="min-height:150px;" oninput="state.courseDraft.studyMaterial=this.value">${escapeHtml(c.studyMaterial)}</textarea>
+          </div>
+          <div class="form-group">
+            <label>Images (up to 4)</label>
+            <input type="file" id="cImagePicker" accept="image/*" style="display:none;" onchange="handleCourseImageAdd(this)" />
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('cImagePicker').click()">+ Add image</button>
+            <div class="img-grid">
+              ${(c.images || []).map((img, i) => `
+                <div class="img-thumb">
+                  <img src="${img}" />
+                  <button onclick="removeDraftImage(${i})">×</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Quiz — one per line: Question | A | B | C | D | correct option (1-4). Used for both pre-test and post-test.</label>
+            <textarea id="cQuiz" style="min-height:130px;font-family:monospace;font-size:12.5px;" oninput="state.courseDraft.quizLines=this.value">${escapeHtml(c.quizLines)}</textarea>
+          </div>
+          <div class="form-group">
+            <label>Assignment title</label>
+            <input type="text" id="cAssignTitle" value="${escapeHtml(c.assignmentTitle)}" oninput="state.courseDraft.assignmentTitle=this.value" />
+          </div>
+          <div class="form-group">
+            <label>Assignment task</label>
+            <textarea id="cAssignTask" oninput="state.courseDraft.assignmentTask=this.value">${escapeHtml(c.assignmentTask)}</textarea>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="handlePublishCourse()">${isEditing ? 'Save changes' : 'Publish course'}</button>
+            ${isEditing ? `<button class="btn btn-outline" onclick="cancelEditCourse()">Cancel</button>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleAiGenerateCourse() {
+      const topic = document.getElementById('aiTopicInput').value.trim();
+      if (!topic) return showToast('Enter a topic first');
+      const btn = document.getElementById('aiGenBtn');
+      btn.textContent = 'Generating...';
+      btn.disabled = true;
+      try {
+        const data = await api('/api/ai/generate-course', { method: 'POST', body: JSON.stringify({ topic }) });
+        state.courseDraft = {
+          ...state.courseDraft,
+          title: data.title || topic,
+          subject: data.subject || 'Science',
+          summary: data.summary || '',
+          studyMaterial: data.studyMaterial || '',
+          quizLines: data.quizLines || '',
+          assignmentTitle: data.assignmentTitle || 'Assignment',
+          assignmentTask: data.assignmentTask || ''
+        };
+        showToast('AI draft ready! Review and publish.');
+        render();
+      } catch (err) {
+        showToast(err.message);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    async function handleCourseImageAdd(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if ((state.courseDraft.images || []).length >= 4) return showToast('Maximum 4 images allowed');
+      const base64 = await fileToBase64(file);
+      state.courseDraft.images.push(base64);
+      render();
+    }
+
+    function removeDraftImage(idx) {
+      state.courseDraft.images.splice(idx, 1);
+      render();
+    }
+
+    function cancelEditCourse() {
+      state.editingCourseId = null;
+      state.courseDraft = {
+        title: '', subject: '', summary: '', studyMaterial: '', images: [],
+        quizLines: '', assignmentTitle: 'Assignment', assignmentTask: ''
+      };
+      state.adminTab = 'courses';
+      render();
+    }
+
+    async function handlePublishCourse() {
+      const d = state.courseDraft;
+      const quiz = parseQuizLines(d.quizLines);
+      if (!d.title.trim() || !d.subject.trim()) return showToast('Course title and subject are required');
+      if (!quiz.length) return showToast('Add at least 1 valid quiz question');
+
+      const payload = {
+        teacherId: state.user.id,
+        teacherName: state.user.name,
+        title: d.title.trim(),
+        subject: d.subject.trim(),
+        summary: d.summary.trim(),
+        studyMaterial: d.studyMaterial.trim(),
+        images: d.images || [],
+        quiz,
+        assignmentTitle: d.assignmentTitle.trim() || 'Assignment',
+        assignmentTask: d.assignmentTask.trim()
+      };
+
+      try {
+        if (state.editingCourseId) {
+          await api(`/api/courses/${state.editingCourseId}`, { method: 'PUT', body: JSON.stringify(payload) });
+          showToast('Course updated');
+        } else {
+          await api(`/api/institutions/${state.institution.code}/courses`, { method: 'POST', body: JSON.stringify(payload) });
+          showToast('Course published');
+        }
+        state.editingCourseId = null;
+        state.courseDraft = {
+          title: '', subject: '', summary: '', studyMaterial: '', images: [],
+          quizLines: '', assignmentTitle: 'Assignment', assignmentTask: ''
+        };
+        state.adminTab = 'courses';
+        await loadAnalytics();
+        render();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    // ================= Courses Tab =================
+    function renderCoursesTab() {
+      const d = state.analyticsData || { courses: [], attempts: [] };
+      const courses = d.courses || [];
+      const attempts = (d.attempts || []).filter(a => a.postSubmitted);
+
+      return `
+        <div class="card">
+          <h3 style="font-size:17px;margin-bottom:14px;">Published courses (${courses.length})</h3>
+          ${!courses.length ? '<p class="helper">No courses published yet. Click "+ New course" to create one.</p>' : courses.map(c => {
+            const ca = attempts.filter(a => String(a.courseId) === String(c._id));
+            const pre = ca.length ? Math.round(ca.reduce((s, a) => s + a.preScore, 0) / ca.length) : 0;
+            const post = ca.length ? Math.round(ca.reduce((s, a) => s + a.postScore, 0) / ca.length) : 0;
+            const growth = pre > 0 ? Math.round(((post - pre) / pre) * 100) : (post > 0 ? 100 : 0);
+
+            return `
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:14px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="width:42px;height:42px;border-radius:10px;background:#dcfce7;display:grid;place-items:center;font-size:20px;">📘</div>
+                  <div>
+                    <div style="font-weight:700;font-size:15px;">${escapeHtml(c.title)} <span class="badge">${escapeHtml(c.subject)}</span></div>
+                    <div class="helper" style="margin-top:2px;">${escapeHtml(c.teacherName)} • ${ca.length} learners • ${ca.length ? `${pre}% → ${post}% · growth +${growth}%` : '0% → 0% · growth -'}</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button class="btn btn-outline btn-sm" onclick="startEditCourse('${c._id}')">Edit</button>
+                  <button class="btn btn-outline btn-sm" onclick="resetCourseStats('${c._id}')">🔄 Reset</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteCourse('${c._id}')">🗑️ Delete</button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function startEditCourse(courseId) {
+      const c = (state.analyticsData?.courses || []).find(x => String(x._id) === String(courseId));
+      if (!c) return;
+      state.editingCourseId = c._id;
+      state.courseDraft = {
+        title: c.title,
+        subject: c.subject,
+        summary: c.summary || '',
+        studyMaterial: c.studyMaterial || '',
+        images: [...(c.images || [])],
+        quizLines: quizToLines(c.quiz || []),
+        assignmentTitle: c.assignmentTitle || 'Assignment',
+        assignmentTask: c.assignmentTask || ''
+      };
+      state.adminTab = 'newCourse';
+      render();
+    }
+
+    async function resetCourseStats(courseId) {
+      if (!confirm('Reset all pre/post test scores and submissions for this course?')) return;
+      await api(`/api/courses/${courseId}/reset`, { method: 'POST' });
+      showToast('Course stats reset');
+      await loadAnalytics();
+      render();
+    }
+
+    async function deleteCourse(courseId) {
+      if (!confirm('Delete this course permanently?')) return;
+      await api(`/api/courses/${courseId}`, { method: 'DELETE' });
+      showToast('Course deleted');
+      await loadAnalytics();
+      render();
+    }
+
+    // ================= Analysis Tab =================
+    function renderAnalysisTab() {
+      const d = state.analyticsData || { courses: [], students: [], attempts: [] };
+      const courses = d.courses || [];
+      const students = d.students || [];
+      const selectedId = state.selectedAnalysisCourse;
+      const completed = (d.attempts || []).filter(a => a.postSubmitted && (selectedId === 'all' || String(a.courseId) === String(selectedId)));
+
+      const count = completed.length;
+      const avgPre = count ? Math.round(completed.reduce((s, a) => s + a.preScore, 0) / count) : 0;
+      const avgPost = count ? Math.round(completed.reduce((s, a) => s + a.postScore, 0) / count) : 0;
+      const gain = avgPost - avgPre;
+      const growthRate = avgPre > 0 ? Math.round(((avgPost - avgPre) / avgPre) * 100) : (avgPost > 0 ? 100 : 0);
+      const normGain = avgPre < 100 && count ? Math.round(((avgPost - avgPre) / (100 - avgPre)) * 100) : 0;
+      const normLevel = normGain >= 70 ? 'High' : (normGain >= 30 ? 'Medium' : 'Low');
+
+      let improved = 0, unchanged = 0, declined = 0;
+      completed.forEach(a => {
+        if (a.postScore > a.preScore) improved++;
+        else if (a.postScore === a.preScore) unchanged++;
+        else declined++;
+      });
+      const totalWho = improved + unchanged + declined || 1;
+
+      // Teacher-wise aggregation
+      const teacherMap = {};
+      completed.forEach(a => {
+        const course = courses.find(c => String(c._id) === String(a.courseId));
+        if (!course) return;
+        const tName = course.teacherName || 'Teacher';
+        if (!teacherMap[tName]) teacherMap[tName] = { courses: new Set(), pre: [], post: [] };
+        teacherMap[tName].courses.add(String(course._id));
+        teacherMap[tName].pre.push(a.preScore);
+        teacherMap[tName].post.push(a.postScore);
+      });
+
+      // Question-wise aggregation when a specific course is selected
+      const selectedCourseObj = selectedId !== 'all' ? courses.find(c => String(c._id) === String(selectedId)) : null;
+
+      return `
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <h3 style="font-size:18px;">Growth analysis</h3>
+            <div style="min-width:220px;">
+              <select onchange="state.selectedAnalysisCourse=this.value;render()">
+                <option value="all" ${selectedId==='all'?'selected':''}>All courses</option>
+                ${courses.map(c => `<option value="${c._id}" ${String(selectedId)===String(c._id)?'selected':''}>${escapeHtml(c.title)}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-val">${avgPre}%</div><div class="kpi-label">Average pre-test</div></div>
+            <div class="kpi-card"><div class="kpi-val">${avgPost}%</div><div class="kpi-label">Average post-test</div></div>
+            <div class="kpi-card"><div class="kpi-val green">${gain >= 0 ? '+' : ''}${gain} pts</div><div class="kpi-label">Average gain</div></div>
+            <div class="kpi-card"><div class="kpi-val green">${growthRate >= 0 ? '+' : ''}${growthRate}%</div><div class="kpi-label">Growth rate</div></div>
+            <div class="kpi-card"><div class="kpi-val">${normGain}%</div><div class="kpi-label">Normalized gain · ${normLevel}</div></div>
+            <div class="kpi-card"><div class="kpi-val">${count}</div><div class="kpi-label">Students measured</div></div>
+          </div>
+
+          <div style="margin-top:8px;">
+            <strong style="font-size:13.5px;">Who improved?</strong>
+            <div class="progress-track">
+              <div class="progress-seg green" style="width:${(improved/totalWho)*100}%"></div>
+              <div class="progress-seg gray" style="width:${(unchanged/totalWho)*100}%"></div>
+              <div class="progress-seg red" style="width:${(declined/totalWho)*100}%"></div>
+            </div>
+            <div class="helper">■ improved (${improved}) &nbsp; ■ unchanged (${unchanged}) &nbsp; ■ declined (${declined})</div>
+            <div class="helper">Growth rate = (post - pre) ÷ pre. Normalized gain = (post - pre) ÷ (100 - pre) — the share of possible improvement achieved (High &gt;70%, Medium 30-70%, Low &lt;30%).</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:12px;">Student-wise growth</h3>
+          <table>
+            <thead><tr><th>Student</th><th>Course</th><th>Pre</th><th>Post</th><th>Gain</th><th>Growth rate</th><th>Norm. gain</th></tr></thead>
+            <tbody>
+              ${!completed.length ? '<tr><td colspan="7" class="helper">No completed post-tests yet.</td></tr>' : completed.map(a => {
+                const st = students.find(s => String(s._id) === String(a.studentId)) || {};
+                const co = courses.find(c => String(c._id) === String(a.courseId)) || {};
+                const g = a.postScore - a.preScore;
+                const gr = a.preScore > 0 ? Math.round((g / a.preScore) * 100) : (a.postScore > 0 ? 100 : 0);
+                const ng = a.preScore < 100 ? Math.round((g / (100 - a.preScore)) * 100) : 0;
+                return `
+                  <tr>
+                    <td><strong>${escapeHtml(st.name || 'Student')}</strong></td>
+                    <td>${escapeHtml(co.title || 'Course')}</td>
+                    <td>${a.preScore}%</td>
+                    <td>${a.postScore}%</td>
+                    <td style="color:var(--green);font-weight:700;">${g >= 0 ? '+' : ''}${g} pts</td>
+                    <td>${gr >= 0 ? '+' : ''}${gr}%</td>
+                    <td>${ng}%</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        ${selectedId === 'all' ? `
+          <div class="card">
+            <h3 style="font-size:16px;margin-bottom:12px;">Teacher-wise growth</h3>
+            <table>
+              <thead><tr><th>Teacher</th><th>Courses</th><th>Pre</th><th>Post</th><th>Gain</th><th>Growth rate</th><th>Norm. gain</th></tr></thead>
+              <tbody>
+                ${Object.entries(teacherMap).map(([name, t]) => {
+                  const p1 = Math.round(t.pre.reduce((s, x) => s + x, 0) / t.pre.length);
+                  const p2 = Math.round(t.post.reduce((s, x) => s + x, 0) / t.post.length);
+                  const g = p2 - p1;
+                  const gr = p1 > 0 ? Math.round((g / p1) * 100) : 100;
+                  const ng = p1 < 100 ? Math.round((g / (100 - p1)) * 100) : 0;
+                  return `
+                    <tr>
+                      <td><strong>${escapeHtml(name)}</strong></td>
+                      <td>${t.courses.size}</td>
+                      <td>${p1}%</td>
+                      <td>${p2}%</td>
+                      <td style="color:var(--green);font-weight:700;">+${g} pts</td>
+                      <td>+${gr}%</td>
+                      <td>${ng}%</td>
+                    </tr>
+                  `;
+                }).join('') || '<tr><td colspan="7" class="helper">No teacher data yet.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        ` : ''}
+
+        ${selectedCourseObj ? `
+          <div class="card">
+            <h3 style="font-size:16px;margin-bottom:12px;">Question-wise results</h3>
+            <table>
+              <thead><tr><th>#</th><th>Question</th><th>Pre correct</th><th>Post correct</th><th>Change</th></tr></thead>
+              <tbody>
+                ${(selectedCourseObj.quiz || []).map((q, idx) => {
+                  const preOk = completed.filter(a => Number(a.preAnswers?.[idx]) === Number(q.correctIndex)).length;
+                  const postOk = completed.filter(a => Number(a.postAnswers?.[idx]) === Number(q.correctIndex)).length;
+                  const prePct = count ? Math.round((preOk / count) * 100) : 0;
+                  const postPct = count ? Math.round((postOk / count) * 100) : 0;
+                  const ch = postPct - prePct;
+                  return `
+                    <tr>
+                      <td>${idx + 1}.</td>
+                      <td>${escapeHtml(q.question)}</td>
+                      <td>${prePct}%</td>
+                      <td>${postPct}%</td>
+                      <td style="color:var(--green);font-weight:700;">${ch >= 0 ? '+' : ''}${ch}%</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+            <p class="helper">Based on ${count} student(s) whose answers were recorded. A low post-test % means a topic to reteach.</p>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    // ================= Students Tab =================
+    function renderStudentsTab() {
+      const d = state.analyticsData || { students: [], attempts: [] };
+      const students = d.students || [];
+      const attempts = (d.attempts || []).filter(a => a.postSubmitted);
+
+      return `
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:6px;">Register students</h3>
+          <p class="helper" style="margin-bottom:10px;">One per line: Name, Class (optional). A unique ID is generated for each and linked to this institution.</p>
+          <div class="form-group">
+            <textarea id="bulkStudentsInput" placeholder="Aarav Patel, 8A&#10;Diya Nair, 8A"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="handleBulkRegisterStudents()">Generate IDs</button>
+        </div>
+
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:12px;">Registered (${students.length})</h3>
+          <table>
+            <thead><tr><th>Name</th><th>Class</th><th>Unique ID</th><th>Tests</th><th>Actions</th></tr></thead>
+            <tbody>
+              ${!students.length ? '<tr><td colspan="5" class="helper">No students registered yet.</td></tr>' : students.map(s => {
+                const tests = attempts.filter(a => String(a.studentId) === String(s._id)).length;
+                return `
+                  <tr>
+                    <td><strong>${escapeHtml(s.name)}</strong></td>
+                    <td>${escapeHtml(s.className || '—')}</td>
+                    <td><span class="mono-pill">${escapeHtml(s.uniqueId)}</span></td>
+                    <td>${tests}</td>
+                    <td style="display:flex;gap:6px;">
+                      <button class="btn btn-outline btn-sm" onclick="openEditStudentModal('${s._id}')">✏️</button>
+                      <button class="btn btn-outline btn-sm" onclick="resetStudentScores('${s._id}')">🔄</button>
+                      <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s._id}')">🗑️</button>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function handleBulkRegisterStudents() {
+      const lines = document.getElementById('bulkStudentsInput').value.trim();
+      if (!lines) return showToast('Enter at least one student');
+      try {
+        await api(`/api/institutions/${state.institution.code}/students/bulk`, {
+          method: 'POST',
+          body: JSON.stringify({ lines })
+        });
+        showToast('IDs generated');
+        await loadAnalytics();
+        render();
+      } catch (err) {
+        showToast(err.message);
+      }
+    }
+
+    function openEditStudentModal(studentId) {
+      const s = (state.analyticsData?.students || []).find(x => String(x._id) === String(studentId));
+      if (!s) return;
+      openModal(`
+        <h3 style="margin-bottom:14px;">Edit student</h3>
+        <div class="form-group"><label>Name</label><input type="text" id="edStName" value="${escapeHtml(s.name)}" /></div>
+        <div class="form-group"><label>Class</label><input type="text" id="edStClass" value="${escapeHtml(s.className || '')}" /></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveStudentEdit('${s._id}')">Save</button>
+        </div>
+      `);
+    }
+
+    async function saveStudentEdit(id) {
+      const name = document.getElementById('edStName').value.trim();
+      const className = document.getElementById('edStClass').value.trim();
+      await api(`/api/students/${id}`, { method: 'PUT', body: JSON.stringify({ name, className }) });
+      closeModal();
+      showToast('Student updated');
+      await loadAnalytics();
+      render();
+    }
+
+    async function resetStudentScores(id) {
+      if (!confirm('Reset all test scores & submissions for this student?')) return;
+      await api(`/api/students/${id}/reset`, { method: 'POST' });
+      showToast('Student scores reset');
+      await loadAnalytics();
+      render();
+    }
+
+    async function deleteStudent(id) {
+      if (!confirm('Delete this student permanently?')) return;
+      await api(`/api/students/${id}`, { method: 'DELETE' });
+      showToast('Student deleted');
+      await loadAnalytics();
+      render();
+    }
+
+    // ================= Submissions Tab =================
+    function renderSubmissionsTab() {
+      const d = state.analyticsData || { submissions: [], students: [], courses: [] };
+      const submissions = d.submissions || [];
+      const students = d.students || [];
+      const courses = d.courses || [];
+
+      return `
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:14px;">Assignment submissions</h3>
+          ${!submissions.length ? '<p class="helper">No assignment submissions yet.</p>' : submissions.map(sub => {
+            const st = students.find(s => String(s._id) === String(sub.studentId)) || {};
+            const co = courses.find(c => String(c._id) === String(sub.courseId)) || {};
+            return `
+              <div style="padding:14px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+                  <div>
+                    <strong>${escapeHtml(st.name || 'Student')}</strong>
+                    <span class="badge" style="margin-left:6px;">${escapeHtml(co.title || 'Course')}</span>
+                    <span class="helper" style="margin-left:6px;">${new Date(sub.submittedAt).toLocaleString()}</span>
+                  </div>
+                  <div style="display:flex;gap:6px;">
+                    <button class="btn btn-outline btn-sm" onclick="openFeedbackModal('${sub._id}')">Feedback</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSubmission('${sub._id}')">Delete</button>
+                  </div>
+                </div>
+                <p style="margin-top:8px;font-size:14px;line-height:1.5;">${escapeHtml(sub.answer)}</p>
+                ${sub.feedback ? `<div style="margin-top:8px;background:#f0fdf4;border:1px solid #bbf7d0;padding:8px 12px;border-radius:8px;font-size:13px;color:#166534;">💬 ${escapeHtml(sub.feedback)}</div>` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function openFeedbackModal(subId) {
+      const sub = (state.analyticsData?.submissions || []).find(x => String(x._id) === String(subId));
+      openModal(`
+        <h3 style="margin-bottom:12px;">Feedback / marks</h3>
+        <div class="form-group">
+          <label>Feedback</label>
+          <textarea id="fbText">${escapeHtml(sub?.feedback || '')}</textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveFeedback('${subId}')">Save</button>
+        </div>
+      `);
+    }
+
+    async function saveFeedback(subId) {
+      const feedback = document.getElementById('fbText').value.trim();
+      await api(`/api/submissions/${subId}/feedback`, { method: 'PUT', body: JSON.stringify({ feedback }) });
+      closeModal();
+      showToast('Saved');
+      await loadAnalytics();
+      render();
+    }
+
+    async function deleteSubmission(subId) {
+      await api(`/api/submissions/${subId}`, { method: 'DELETE' });
+      showToast('Submission deleted');
+      await loadAnalytics();
+      render();
+    }
+
+    // ================= Teachers Tab =================
+    function renderTeachersTab() {
+      const d = state.analyticsData || { teachers: [], courses: [] };
+      const teachers = d.teachers || [];
+      const courses = d.courses || [];
+
+      return `
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <h3 style="font-size:17px;">Teachers</h3>
+            <button class="btn btn-primary btn-sm" onclick="openTeacherModal()">+ Add teacher</button>
+          </div>
+          ${!teachers.length ? '<p class="helper">No teachers yet. Each teacher logs in with your institution code and their mobile number.</p>' : teachers.map(t => {
+            const count = courses.filter(c => c.teacherName === t.name).length;
+            return `
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div class="avatar-dot">${t.photo ? `<img src="${t.photo}" />` : escapeHtml((t.name || 'T')[0].toUpperCase())}</div>
+                  <div>
+                    <div style="font-weight:700;">${escapeHtml(t.name)} <span class="badge">${escapeHtml(t.subject)}</span></div>
+                    <div class="helper" style="margin-top:2px;">${escapeHtml(t.mobile)} • ${count} courses</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn btn-outline btn-sm" onclick="openTeacherModal('${t._id}')">Edit</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteTeacher('${t._id}')">🗑️ Delete</button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function openTeacherModal(teacherId = null) {
+      const t = teacherId ? (state.analyticsData?.teachers || []).find(x => String(x._id) === String(teacherId)) : {};
+      openModal(`
+        <h3 style="margin-bottom:14px;">${teacherId ? 'Edit teacher' : 'Add teacher'}</h3>
+        <div class="form-group"><label>Name</label><input type="text" id="tName" value="${escapeHtml(t?.name || '')}" placeholder="e.g. Ravi Kumar" /></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="tSubject" value="${escapeHtml(t?.subject || '')}" placeholder="e.g. Science" /></div>
+        <div class="form-group"><label>Mobile number (OTP login)</label><input type="tel" id="tMobile" value="${escapeHtml(t?.mobile || '')}" placeholder="e.g. 9123456780" /></div>
+        <div class="form-group"><label>Photo (optional)</label><input type="file" id="tPhoto" accept="image/*" /></div>
+        <div style="display:flex;justify-content:flex-end;gap:8px;">
+          <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveTeacher('${teacherId || ''}')">Save</button>
+        </div>
+      `);
+    }
+
+    async function saveTeacher(teacherId) {
+      const name = document.getElementById('tName').value.trim();
+      const subject = document.getElementById('tSubject').value.trim();
+      const mobile = document.getElementById('tMobile').value.trim();
+      const photoFile = document.getElementById('tPhoto').files[0];
+      if (!name || !subject || !mobile) return showToast('Fill all required fields');
+
+      const existing = teacherId ? (state.analyticsData?.teachers || []).find(x => String(x._id) === String(teacherId)) : null;
+      const photo = photoFile ? await fileToBase64(photoFile) : (existing?.photo || '');
+
+      if (teacherId) {
+        await api(`/api/teachers/${teacherId}`, { method: 'PUT', body: JSON.stringify({ name, subject, mobile, photo }) });
+      } else {
+        await api(`/api/institutions/${state.institution.code}/teachers`, { method: 'POST', body: JSON.stringify({ name, subject, mobile, photo }) });
+      }
+      closeModal();
+      showToast('Saved');
+      await loadAnalytics();
+      render();
+    }
+
+    async function deleteTeacher(id) {
+      if (!confirm('Delete this teacher?')) return;
+      await api(`/api/teachers/${id}`, { method: 'DELETE' });
+      showToast('Teacher removed');
+      await loadAnalytics();
+      render();
+    }
+
+    // ================= Institute Settings Tab =================
+    function renderInstituteTab() {
+      const inst = state.institution || {};
+      const logoHtml = inst.logo ? `<img src="${inst.logo}" />` : escapeHtml((inst.name || 'S')[0].toUpperCase());
+
+      return `
+        <div class="card">
+          <h3 style="font-size:17px;margin-bottom:8px;">Institution profile</h3>
+          <div style="margin-bottom:14px;"><p class="helper" style="margin-bottom:4px;">Code</p><div class="code-box" style="font-size:14px;padding:6px 10px;">${escapeHtml(inst.code)}</div></div>
+          <div class="form-group"><label>Name</label><input type="text" id="instName" value="${escapeHtml(inst.name)}" /></div>
+          <div class="form-group"><label>About</label><textarea id="instAbout">${escapeHtml(inst.about || '')}</textarea></div>
+          <div class="form-group"><label>Address</label><input type="text" id="instAddress" value="${escapeHtml(inst.address || '')}" /></div>
+          <div class="form-row">
+            <div class="form-group"><label>Admin name</label><input type="text" id="instAdminName" value="${escapeHtml(inst.adminName)}" /></div>
+            <div class="form-group"><label>Admin mobile</label><input type="tel" id="instAdminMobile" value="${escapeHtml(inst.adminMobile)}" /></div>
+          </div>
+          <div class="form-group">
+            <label>Logo</label>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="brand-icon gold">${logoHtml}</div>
+              <input type="file" id="instLogoFile" accept="image/*" style="display:none;" onchange="handleInstLogoChange(this)" />
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('instLogoFile').click()">Change logo</button>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveInstituteChanges()">Save changes</button>
+        </div>
+
+        <div class="danger-zone">
+          <h3 style="color:var(--red);font-size:16px;margin-bottom:4px;">⚠️ Danger zone</h3>
+          <p class="helper" style="margin-bottom:12px;">Only affects your institution.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <button class="btn btn-outline" onclick="resetAllInstitutionScores()">🔄 Reset all scores & submissions</button>
+            <button class="btn btn-danger" onclick="deleteEntireInstitution()">🗑️ Delete entire institution</button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleInstLogoChange(input) {
+      const file = input.files[0];
+      if (!file) return;
+      state.institution.logo = await fileToBase64(file);
+      render();
+    }
+
+    async function saveInstituteChanges() {
+      const payload = {
+        name: document.getElementById('instName').value.trim(),
+        about: document.getElementById('instAbout').value.trim(),
+        address: document.getElementById('instAddress').value.trim(),
+        adminName: document.getElementById('instAdminName').value.trim(),
+        adminMobile: document.getElementById('instAdminMobile').value.trim(),
+        logo: state.institution.logo || ''
+      };
+      const data = await api(`/api/institutions/${state.institution.code}`, { method: 'PUT', body: JSON.stringify(payload) });
+      saveSession({ ...state.user, name: data.institution.adminName }, data.institution);
+      showToast('Changes saved');
+      render();
+    }
+
+    async function resetAllInstitutionScores() {
+      if (!confirm('Reset ALL student test scores and submissions in this institution?')) return;
+      await api(`/api/institutions/${state.institution.code}/reset-scores`, { method: 'POST' });
+      showToast('All scores & submissions reset');
+      await loadAnalytics();
+      render();
+    }
+
+    async function deleteEntireInstitution() {
+      if (!confirm('Permanently delete this entire institution and all its data?')) return;
+      await api(`/api/institutions/${state.institution.code}`, { method: 'DELETE' });
+      showToast('Institution deleted');
+      logout();
+    }
+
+    // ================= Student Experience =================
+    async function loadStudentDashboard() {
+      if (!state.user || state.user.role !== 'student') return;
+      const data = await api(`/api/student/${state.user.id}/dashboard`);
+      state.studentDashboard = data;
+    }
+
+    function renderStudentShell() {
+      if (state.activeStudentCourseId) return renderStudentCourseDetail();
+
+      const sd = state.studentDashboard || { student: state.user, courses: [], attempts: [], submissions: [] };
+      const st = sd.student || state.user;
+      const courses = sd.courses || [];
+      const attempts = sd.attempts || [];
+      const completed = attempts.filter(a => a.postSubmitted);
+
+      const avgGain = completed.length
+        ? Math.round(completed.reduce((s, a) => s + (a.postScore - a.preScore), 0) / completed.length)
+        : null;
+      const avgGrowth = completed.length
+        ? Math.round(completed.reduce((s, a) => s + (a.preScore > 0 ? ((a.postScore - a.preScore) / a.preScore) * 100 : (a.postScore > 0 ? 100 : 0)), 0) / completed.length)
+        : null;
+
+      // Group courses by teacher
+      const byTeacher = {};
+      courses.forEach(c => {
+        const key = `${c.teacherName}__${c.subject}`;
+        if (!byTeacher[key]) byTeacher[key] = { teacherName: c.teacherName, subject: c.subject, list: [] };
+        byTeacher[key].list.push(c);
+      });
+
+      return `
+        ${renderInstHeader()}
+        <div class="container">
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="avatar-dot" style="width:48px;height:48px;font-size:18px;">
+                  ${st.photo ? `<img src="${st.photo}" />` : escapeHtml((st.name || 'S')[0].toUpperCase())}
+                </div>
+                <div>
+                  <h2 style="font-size:20px;">Hi ${escapeHtml(st.name)} 👋</h2>
+                  <input type="file" id="studentPhotoInput" accept="image/*" style="display:none;" onchange="handleStudentPhotoUpload(this)" />
+                  <button class="btn btn-outline btn-sm" style="margin-top:4px;" onclick="document.getElementById('studentPhotoInput').click()">Add my photo</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-grid" style="margin-bottom:0;">
+              <div class="kpi-card"><div class="kpi-val">${completed.length}/${courses.length}</div><div class="kpi-label">Courses completed</div></div>
+              <div class="kpi-card"><div class="kpi-val green">${avgGain === null ? '—' : `${avgGain >= 0 ? '+' : ''}${avgGain} pts`}</div><div class="kpi-label">Your learning gain</div></div>
+              <div class="kpi-card"><div class="kpi-val green">${avgGrowth === null ? '—' : `${avgGrowth >= 0 ? '+' : ''}${avgGrowth}%`}</div><div class="kpi-label">Your growth rate</div></div>
+              <div class="kpi-card"><div class="kpi-val" style="font-size:17px;font-family:monospace;">${escapeHtml(st.uniqueId)}</div><div class="kpi-label">Your ID</div></div>
+            </div>
+          </div>
+
+          ${!courses.length ? '<div class="card"><p class="helper">No courses published yet by your teachers.</p></div>' : Object.values(byTeacher).map(grp => `
+            <div class="card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <h3 style="font-size:16px;">${escapeHtml(grp.teacherName)}</h3>
+                <span class="badge">${escapeHtml(grp.subject)}</span>
+              </div>
+              ${grp.list.map(c => {
+                const att = attempts.find(a => String(a.courseId) === String(c._id));
+                const btnLabel = att?.postSubmitted ? 'Review' : (att?.preSubmitted ? 'Continue' : 'Start');
+                return `
+                  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <div style="width:40px;height:40px;border-radius:10px;background:#dcfce7;display:grid;place-items:center;font-size:18px;">📘</div>
+                      <div>
+                        <div style="font-weight:700;font-size:15px;">${escapeHtml(c.title)}</div>
+                        <div class="helper" style="margin-top:2px;">${escapeHtml(c.summary)}</div>
+                      </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openStudentCourse('${c._id}')">${btnLabel}</button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    async function handleStudentPhotoUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const photo = await fileToBase64(file);
+      const data = await api(`/api/students/${state.user.id}`, { method: 'PUT', body: JSON.stringify({ photo }) });
+      saveSession({ ...state.user, photo: data.student.photo }, state.institution);
+      await loadStudentDashboard();
+      render();
+    }
+
+    function openStudentCourse(courseId) {
+      const att = (state.studentDashboard?.attempts || []).find(a => String(a.courseId) === String(courseId));
+      state.activeStudentCourseId = courseId;
+      state.studentCourseStep = att?.preSubmitted ? 2 : 1;
+      render();
+    }
+
+    function renderStudentCourseDetail() {
+      const sd = state.studentDashboard;
+      const course = (sd.courses || []).find(c => String(c._id) === String(state.activeStudentCourseId));
+      if (!course) return '';
+
+      const att = (sd.attempts || []).find(a => String(a.courseId) === String(course._id));
+      const sub = (sd.submissions || []).find(s => String(s.courseId) === String(course._id));
+      const step = state.studentCourseStep;
+
+      return `
+        ${renderInstHeader()}
+        <div class="container">
+          <button class="btn btn-outline btn-sm" style="margin-bottom:14px;" onclick="state.activeStudentCourseId=null;render()">← Back</button>
+
+          <div class="course-banner">
+            <h2>${escapeHtml(course.title)}</h2>
+            <div style="font-size:13.5px;opacity:0.9;">${escapeHtml(course.teacherName)} • ${escapeHtml(course.subject)}</div>
+          </div>
+
+          <div class="stepper">
+            <button class="step-pill ${step===1?'active':''}" onclick="state.studentCourseStep=1;render()">1. Pre-test</button>
+            <button class="step-pill ${step===2?'active':''}" ${!att?.preSubmitted?'disabled':''} onclick="state.studentCourseStep=2;render()">2. Study + post-test</button>
+            <button class="step-pill ${step===3?'active':''}" ${!att?.preSubmitted?'disabled':''} onclick="state.studentCourseStep=3;render()">3. Assignment</button>
+          </div>
+
+          ${step === 1 ? renderStudentPreTest(course, att) : ''}
+          ${step === 2 ? renderStudentStudyAndPost(course, att, sub) : ''}
+          ${step === 3 ? renderStudentAssignmentCard(course, sub) : ''}
+        </div>
+      `;
+    }
+
+    function renderStudentPreTest(course, att) {
+      if (att?.preSubmitted) {
+        return `
+          <div class="card">
+            <h3 style="margin-bottom:8px;">✅ Pre-test recorded: ${att.preScore}%</h3>
+            <p class="helper" style="margin-bottom:12px;">Your starting score is saved. Study the material and take the post-test next.</p>
+            <button class="btn btn-primary" onclick="state.studentCourseStep=2;render()">Go to Study + post-test</button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="card">
+          <h3 style="font-size:16px;margin-bottom:4px;">Step 1 — Pre-test</h3>
+          <p class="helper" style="margin-bottom:16px;">Answer before studying. This is your starting point.</p>
+          ${(course.quiz || []).map((q, i) => `
+            <div class="quiz-q">
+              <h4>${i + 1}. ${escapeHtml(q.question)}</h4>
+              ${q.options.map((opt, oi) => `
+                <label class="opt-label">
+                  <input type="radio" name="pre_q_${i}" value="${oi}" />
+                  <span>${escapeHtml(opt)}</span>
+                </label>
+              `).join('')}
+            </div>
+          `).join('')}
+          <button class="btn btn-primary" onclick="submitPreTest('${course._id}', ${(course.quiz || []).length})">Submit pre-test</button>
+        </div>
+      `;
+    }
+
+    async function submitPreTest(courseId, count) {
+      const answers = [];
+      for (let i = 0; i < count; i++) {
+        const sel = document.querySelector(`input[name="pre_q_${i}"]:checked`);
+        if (!sel) return showToast(`Please answer question ${i + 1}`);
+        answers.push(Number(sel.value));
+      }
+      await api('/api/attempts/pre-test', {
+        method: 'POST',
+        body: JSON.stringify({ courseId, studentId: state.user.id, answers })
+      });
+      await loadStudentDashboard();
+      state.studentCourseStep = 2;
+      showToast('Pre-test recorded!');
+      render();
+    }
+
+    function renderStudentStudyAndPost(course, att, sub) {
+      const studyHtml = `
+        <div style="margin-bottom:18px;">
+          <h3 style="font-size:16px;margin-bottom:12px;">📖 Study material</h3>
+          ${formatStudyMaterial(course.studyMaterial)}
+          ${(course.images || []).length ? `
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
+              ${course.images.map(img => `<img src="${img}" style="max-width:260px;border-radius:10px;border:1px solid var(--border);" />`).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      if (!att?.postSubmitted) {
+        return `
+          <div class="card">
+            <div style="margin-bottom:14px;"><span class="badge-green badge">✓ Pre-test score: ${att?.preScore ?? 0}%</span></div>
+            ${studyHtml}
+            <hr style="border:none;border-top:1px solid var(--border);margin:18px 0;" />
+            <h3 style="font-size:16px;margin-bottom:12px;">Step 3 — Post-test</h3>
+            ${(course.quiz || []).map((q, i) => `
+              <div class="quiz-q">
+                <h4>${i + 1}. ${escapeHtml(q.question)}</h4>
+                ${q.options.map((opt, oi) => `
+                  <label class="opt-label">
+                    <input type="radio" name="post_q_${i}" value="${oi}" />
+                    <span>${escapeHtml(opt)}</span>
+                  </label>
+                `).join('')}
+              </div>
+            `).join('')}
+            <button class="btn btn-primary" onclick="submitPostTest('${course._id}', ${(course.quiz || []).length})">Submit post-test</button>
+          </div>
+        `;
+      }
+
+      const pre = att.preScore;
+      const post = att.postScore;
+      const gain = post - pre;
+      const growthRate = pre > 0 ? Math.round((gain / pre) * 100) : (post > 0 ? 100 : 0);
+      const normGain = pre < 100 ? Math.round((gain / (100 - pre)) * 100) : 0;
+      const normLevel = normGain >= 70 ? 'High' : (normGain >= 30 ? 'Medium' : 'Low');
+
+      return `
+        <div class="card">
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-val">${pre}%</div><div class="kpi-label">Before</div></div>
+            <div class="kpi-card"><div class="kpi-val">${post}%</div><div class="kpi-label">After</div></div>
+            <div class="kpi-card"><div class="kpi-val green">${gain >= 0 ? '+' : ''}${gain} pts</div><div class="kpi-label">Learning gain 🎉</div></div>
+          </div>
+
+          <h3 style="font-size:16px;margin-bottom:10px;">Your growth analysis</h3>
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-val green">${gain >= 0 ? '+' : ''}${gain} pts</div><div class="kpi-label">Score change</div></div>
+            <div class="kpi-card"><div class="kpi-val green">${growthRate >= 0 ? '+' : ''}${growthRate}%</div><div class="kpi-label">Growth rate</div></div>
+            <div class="kpi-card"><div class="kpi-val">${normGain}%</div><div class="kpi-label">Normalized gain · ${normLevel}</div></div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span>Before</span><span>${pre}%</span></div>
+            <div class="progress-track"><div class="progress-seg gray" style="width:${pre}%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;"><span>After</span><span>${post}%</span></div>
+            <div class="progress-track"><div class="progress-seg green" style="width:${post}%"></div></div>
+            <p class="helper">Growth rate = (after − before) ÷ before. Normalized gain = the share of possible improvement you achieved.</p>
+          </div>
+
+          <table style="margin-bottom:18px;">
+            <thead><tr><th>#</th><th>Question</th><th>Pre</th><th>Post</th><th>Status</th></tr></thead>
+            <tbody>
+              ${(course.quiz || []).map((q, idx) => {
+                const p1 = Number(att.preAnswers?.[idx]) === Number(q.correctIndex);
+                const p2 = Number(att.postAnswers?.[idx]) === Number(q.correctIndex);
+                const status = !p1 && p2 ? '📈 Improved' : (p1 && p2 ? '✅ Kept' : '⚠️ Revise');
+                return `<tr><td>${idx + 1}.</td><td>${escapeHtml(q.question)}</td><td>${p1 ? '✅' : '❌'}</td><td>${p2 ? '✅' : '❌'}</td><td>${status}</td></tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+
+          ${studyHtml}
+          <hr style="border:none;border-top:1px solid var(--border);margin:18px 0;" />
+          ${renderAssignmentInner(course, sub)}
+        </div>
+      `;
+    }
+
+    async function submitPostTest(courseId, count) {
+      const answers = [];
+      for (let i = 0; i < count; i++) {
+        const sel = document.querySelector(`input[name="post_q_${i}"]:checked`);
+        if (!sel) return showToast(`Please answer question ${i + 1}`);
+        answers.push(Number(sel.value));
+      }
+      await api('/api/attempts/post-test', {
+        method: 'POST',
+        body: JSON.stringify({ courseId, studentId: state.user.id, answers })
+      });
+      await loadStudentDashboard();
+      showToast('Post-test completed!');
+      render();
+    }
+
+    function renderAssignmentInner(course, sub) {
+      const isEditing = state.editingSubCourseId === String(course._id);
+      if (sub && !isEditing) {
+        return `
+          <h3 style="font-size:16px;margin-bottom:6px;">📝 ${escapeHtml(course.assignmentTitle || 'Assignment')}</h3>
+          <p class="helper" style="margin-bottom:10px;">${escapeHtml(course.assignmentTask || '')}</p>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;padding:12px;border-radius:10px;">
+            <div style="font-weight:700;color:#166534;margin-bottom:6px;">Submitted ✅</div>
+            <p style="font-size:14px;line-height:1.5;">${escapeHtml(sub.answer)}</p>
+            ${sub.feedback ? `<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #86efac;font-size:13px;color:#15803d;">💬 Teacher feedback: ${escapeHtml(sub.feedback)}</div>` : ''}
+            <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="state.editingSubCourseId='${course._id}';render()">✏️ Edit & resubmit</button>
+          </div>
+        `;
+      }
+
+      return `
+        <h3 style="font-size:16px;margin-bottom:6px;">📝 ${escapeHtml(course.assignmentTitle || 'Assignment')}</h3>
+        <p style="font-size:14px;color:#374151;margin-bottom:10px;">${escapeHtml(course.assignmentTask || '')}</p>
+        <div class="form-group">
+          <textarea id="assignAnsInput" placeholder="Write your answer...">${escapeHtml(sub?.answer || '')}</textarea>
+        </div>
+        <button class="btn btn-primary" onclick="submitAssignment('${course._id}')">Submit assignment</button>
+      `;
+    }
+
+    function renderStudentAssignmentCard(course, sub) {
+      return `<div class="card">${renderAssignmentInner(course, sub)}</div>`;
+    }
+
+    async function submitAssignment(courseId) {
+      const answer = document.getElementById('assignAnsInput').value.trim();
+      if (!answer) return showToast('Write your answer before submitting');
+      await api('/api/submissions', {
+        method: 'POST',
+        body: JSON.stringify({ courseId, studentId: state.user.id, answer })
+      });
+      state.editingSubCourseId = null;
+      await loadStudentDashboard();
+      showToast('Submitted ✅');
+      render();
+    }
+
+    // ================= Main Render & Boot =================
+    function render() {
+      const app = document.getElementById('app');
+      if (!state.user) {
+        app.innerHTML = renderLanding();
+      } else if (state.user.role === 'student') {
+        app.innerHTML = renderStudentShell();
+      } else {
+        app.innerHTML = renderAdminShell();
+      }
+    }
+
+    (async function init() {
+      if (state.user) {
+        try {
+          if (state.user.role === 'student') await loadStudentDashboard();
+          else await loadAnalytics();
+        } catch (err) {
+          console.warn('Session refresh failed:', err.message);
+        }
+      }
+      render();
+    })();
+  </script>
+</body>
+</html>
